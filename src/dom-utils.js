@@ -1,7 +1,7 @@
 export const fileInput = document.getElementById("fileInput");
 export const modelSelect = document.getElementById("modelSelect");
 export const loadButton = document.getElementById("loadButton");
-export const displayElement = document.getElementById("display"); // This is a <pre>
+export const displayElement = document.getElementById("display"); 
 
 const statusElement = document.getElementById("status");
 
@@ -21,6 +21,12 @@ export function enableControls() {
     if (fileInput) fileInput.disabled = false;
     if (modelSelect) modelSelect.disabled = false;
     if (loadButton) loadButton.disabled = false;
+}
+
+export function disableControls() {
+    if (fileInput) fileInput.disabled = true;
+    if (modelSelect) modelSelect.disabled = true;
+    if (loadButton) loadButton.disabled = true;
 }
 
 export async function adjustFontSize() {

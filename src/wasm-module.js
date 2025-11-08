@@ -2,30 +2,31 @@ export function initializeWasmModule(o) {
     window.Module = {
         preRun: [() => console.log("Module preRun: Setting up filesystem.")],
         postRun: [],
-        print: o.onPrint || ((o) => console.log(o)),
-        printErr: o.onPrintErr || ((o) => console.error(o)),
+        print: o.onPrint || ((text) => console.log(text)),
+        printErr: o.onPrintErr || ((text) => console.error(text)),
         onRuntimeInitialized: o.onRuntimeInitialized || (() => console.log("Runtime initialized.")),
-        noInitialRun: !0,
+        noInitialRun: true,
     };
-    const e = document.createElement("script");
-    (e.src = "src/index.js"),
-        (e.onerror = () => {
-            o.onPrintErr("Failed to load WASM script (index.js).");
-        }),
-        document.body.appendChild(e);
+    
+    const script = document.createElement("script");
+    script.src = "src/index.js";
+    script.onerror = () => {
+        o.onPrintErr("Failed to load WASM script (index.js).");
+    };
+    document.body.appendChild(script);
 }
-export function processSTL(o, e) {
-    if (!window.Module || !window.Module.FS)
-        throw (
-            (console.error("Error: WASM Module or Filesystem not ready."),
-            new Error("WASM Module not ready."))
-        );
+
+export function processSTL(data, filename) {
+    if (!window.Module || !window.Module.FS) {
+        console.error("Error: WASM Module or Filesystem not ready.");
+        throw new Error("WASM Module not ready.");
+    }
+
     try {
-        Module.FS.writeFile("/model.stl", o), Module.callMain();
-    } catch (o) {
-        throw (
-            (console.error(`Error processing STL in WASM: ${o}`),
-            new Error(`WASM execution failed: ${o.message}`))
-        );
+        Module.FS.writeFile("/model.stl", data);
+        Module.callMain();
+    } catch (err) {
+        console.error(`Error processing STL in WASM: ${err}`);
+        throw new Error(`WASM execution failed: ${err.message}`);
     }
 }
