@@ -6,15 +6,16 @@ CXXFLAGS = -std=c++17 -Wall -Wextra -O2 -I./include
 TESTFLAGS = -std=c++17 -Wall -Wextra -g -I./include
 
 # Directories
-SRC_DIR = src
 INCLUDE_DIR = include
 TEST_DIR = tests
 BUILD_DIR = build
 TEST_BUILD_DIR = build/tests
 
-# Source files
-SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
-OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+# Source files (excluding main.cpp for tests)
+CPP_FILES = $(wildcard *.cpp)
+SOURCES = $(filter-out main.cpp, $(CPP_FILES))
+OBJECTS = $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+MAIN_OBJECT = $(BUILD_DIR)/main.o
 
 # Test files
 TEST_SOURCES = $(wildcard $(TEST_DIR)/*.cpp)
@@ -33,11 +34,11 @@ $(BUILD_DIR):
 	mkdir -p $(TEST_BUILD_DIR)
 
 # Build main executable
-$(MAIN_TARGET): $(OBJECTS) | $(BUILD_DIR)
+$(MAIN_TARGET): $(MAIN_OBJECT) $(OBJECTS) | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -o $@ $^ -lm
 
 # Compile source files
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: %.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Build tests

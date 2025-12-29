@@ -21,7 +21,7 @@ OUT=build/stl_viewer.js
 
 # Compile with Emscripten
 echo "Compiling with Emscripten..."
-emcc -o $OUT src/main.cpp src/renderer.cpp src/model.cpp src/projection.cpp src/lighting.cpp src/rasterizer.cpp \
+emcc -o $OUT main.cpp renderer.cpp model.cpp projection.cpp lighting.cpp rasterizer.cpp \
      -std=c++17 \
      -I./include \
      -s INVOKE_RUN=0 \
@@ -31,4 +31,4 @@ emcc -o $OUT src/main.cpp src/renderer.cpp src/model.cpp src/projection.cpp src/
 
 echo "✅ Build complete: $OUT"
 echo "The generated files are in build/ directory"
-echo "Copy them to termesh/src/ for the web interface"
+echo "Copy them to ../src/ for the web interface"
